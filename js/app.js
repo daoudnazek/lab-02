@@ -1,5 +1,6 @@
 'use strict';
 
+
 $.get('data/page-1.json').then(data => {
     data.forEach(element => {
         let horns = new Horns(element.image_url, element.title, element.description, element.keyword, element.horns)
@@ -8,6 +9,7 @@ $.get('data/page-1.json').then(data => {
 
     });
 });
+
 
 var hornsArr = [];
 var optionsArr = [];
@@ -29,7 +31,7 @@ Horns.prototype.render = function () {
     itemCloned.find('h2').text(this.title);
     itemCloned.find('p').text(this.description);
     $('main').append(itemCloned);
-    
+
 };
 
 
@@ -41,6 +43,16 @@ function addOptions() {
         }
     });
 }
+
+function sortImagesByKeyword(){
+    hornsArr.sort((a,b) => a.keyword.localCompare(b.keyword))
+}
+
+function sortImagesByNumberOfHorns(){
+    hornsArr.sort((a,b) => a.horns - b.horns);
+}
+
+
 
 
 function showSelectedOption() {
@@ -57,3 +69,4 @@ function showSelectedOption() {
 }
 
 showSelectedOption();
+
