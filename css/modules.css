@@ -1,0 +1,40 @@
+header h1{
+    padding-top: 30px;
+    font-size: 30px;
+}
+
+header select{
+    margin-top: 10px;
+}
+
+
+section{
+    float: left;
+    border: 2px black solid;
+    text-align: center;
+    margin: 10px;
+    height: 400px;
+    overflow: hidden;
+}
+
+img{
+    width: 200px;
+    height: 300px;
+}
+
+p{
+    width: 200px;
+}
+
+
+h2{
+    background-color: #5C946E;
+    color: white;
+    padding: 10px;
+}
+
+p{
+    background-color: #5C946E;
+    padding: 10px;
+
+}

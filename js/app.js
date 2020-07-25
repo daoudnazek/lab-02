@@ -5,6 +5,7 @@ $.get('data/page-1.json').then(data => {
         let horns = new Horns(element.image_url, element.title, element.description, element.keyword, element.horns)
         horns.render();
         addOptions();
+
     });
 });
 
@@ -21,31 +22,38 @@ function Horns(image_url, title, description, keyword, horns) {
 };
 
 Horns.prototype.render = function () {
-    let itemClone = $('.photo-template').clone();
-    itemClone.removeClass('photo-template');
-    itemClone.attr('class',this.keyword);
-    itemClone.find('img').attr("src", this.image_url);
-    itemClone.find('h2').text(this.title);
-    itemClone.find('p').text(this.description);
-    $('main').append(itemClone);
+    let itemCloned = $('.photo-template').clone();
+    itemCloned.removeClass('photo-template');
+    itemCloned.attr('class', this.keyword);
+    itemCloned.find('img').attr("src", this.image_url);
+    itemCloned.find('h2').text(this.title);
+    itemCloned.find('p').text(this.description);
+    $('main').append(itemCloned);
+    
 };
 
-function addOptions (){
+
+function addOptions() {
     hornsArr.forEach(element => {
         if (!optionsArr.includes(element.keyword)) {
-          optionsArr.push(element.keyword);
-          $('select').append(`<option value="${element.keyword}" >${element.keyword}</option>`)
+            optionsArr.push(element.keyword);
+            $('select').append(`<option value="${element.keyword}" >${element.keyword}</option>`)
         }
-      });
+    });
 }
 
 
 function showSelectedOption() {
-  $('select').change(function () {
-    let selected = $(this).val();
-    $('section').hide();
-    $(`.${selected}`).show();
-  });
+    $('select').change(function (event) {
+        event.preventDefault();
+        let selected = $(this).val();
+        if (selected === 'default') {
+            $('section').show();
+        } else {
+            $('section').hide();
+            $(`.${selected}`).show();
+        }
+    });
 }
 
 showSelectedOption();
