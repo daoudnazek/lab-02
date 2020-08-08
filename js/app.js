@@ -1,26 +1,36 @@
 'use strict';
 
-let numberOfPage = 1;
-function switchPages(numberOfPage){
-    $(`.page-${numberOfPage}`).on("click",function(){
-        $('main').empty();
-        $('select').empty();
-        $.get(`data/page-${numberOfPage}.json`).then(data => {
-            data.forEach(element => {
-                let horns = new Horns(element.image_url, element.title, element.description, element.keyword, element.horns)
-                horns.render();
-                addOptions();
-            });
-        });
-    })
-}
-switchPages(1);
-switchPages(2);
-
-
 var hornsArr = [];
 var optionsArr = [];
-var optionsArr2 = [];
+
+function switchPages(numberOfPage) {
+    hornsArr = [];
+    $('main').empty();
+    $.get(numberOfPage).then(data => {
+        data.forEach(element => {
+            let horns = new Horns(element.image_url, element.title, element.description, element.keyword, element.horns)
+        });
+        hornsArr.forEach(element => {
+            element.render();
+        });
+        addOptions();
+    });
+};
+
+
+
+$('.page-1').on('click', function () {
+    switchPages('data/page-1.json');
+    addOptions();
+})
+
+$('.page-2').on('click', function () {
+    switchPages('data/page-2.json');
+    addOptions();
+})
+
+switchPages('data/page-1.json');
+
 
 function Horns(image_url, title, description, keyword, horns) {
     this.image_url = image_url;
@@ -31,46 +41,47 @@ function Horns(image_url, title, description, keyword, horns) {
     hornsArr.push(this);
 };
 
-// Horns.prototype.render = function () {
-//     let itemCloned = $('.photo-template').clone();
-//     itemCloned.removeClass('photo-template');
-//     itemCloned.attr('class', this.keyword);
-//     itemCloned.find('img').attr("src", this.image_url);
-//     itemCloned.find('h2').text(this.title);
-//     itemCloned.find('p').text(this.description);
-//     $('main').append(itemCloned);
-
-// };
 
 Horns.prototype.render = function () {
-    let mustachTemplate =$('#horns-template').html();
-    let newItem = Mustache.render(mustachTemplate,this);
+    let mustachTemplate = $('#horns-template').html();
+    let newItem = Mustache.render(mustachTemplate, this);
     $('main').append(newItem);
 };
 
 
 function addOptions() {
+    optionsArr = [];
+    $('#optionList').empty();
     hornsArr.forEach(element => {
         if (!optionsArr.includes(element.keyword)) {
             optionsArr.push(element.keyword);
-            $('select').append(`<option value="${element.keyword}" >${element.keyword}</option>`)
+            $('#optionList').append(`<option value="${element.keyword}" >${element.keyword}</option>`)
         }
     });
+};
+
+
+$('.by-keyword').click(sortImagesByKeyword);
+$('.by-numberOfHotns').click(sortImagesByNumberOfHorns);
+
+function sortImagesByKeyword() {
+    $('main').empty();
+    hornsArr.sort((a, b) => a.keyword.localeCompare(b.keyword))
+    hornsArr.forEach(e => e.render());
+
 }
 
-function sortImagesByKeyword(){
-    hornsArr.sort((a,b) => a.keyword.localCompare(b.keyword))
-}
-
-function sortImagesByNumberOfHorns(){
-    hornsArr.sort((a,b) => a.horns - b.horns);
+function sortImagesByNumberOfHorns() {
+    $('main').empty();
+    hornsArr.sort((a, b) => a.horns - b.horns);
+    hornsArr.forEach(e => e.render());
 }
 
 
 
 
 function showSelectedOption() {
-    $('select').change(function (event) {
+    $('#optionList').change(function (event) {
         event.preventDefault();
         let selected = $(this).val();
         if (selected === 'default') {
@@ -82,5 +93,21 @@ function showSelectedOption() {
     });
 }
 
+function showSortedHorns() {
+    $('#sort').change(function (event) {
+        event.preventDefault();
+        let selected = $(this).val();
+        if (selected === 'default') {
+            $('main').empty();
+            hornsArr.forEach(e => e.render());
+        } else if (selected === 'keyword') {
+            sortImagesByKeyword();
+        } else if (selected === 'horns') {
+            sortImagesByNumberOfHorns();
+        }
+    });
+}
+
 showSelectedOption();
+showSortedHorns();
 
